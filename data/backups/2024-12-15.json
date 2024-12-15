@@ -1,0 +1,51 @@
+{
+    "2024-12-15": {
+        "total_hours": 0.023055555555555555,
+        "tasks": [
+            {
+                "description": "",
+                "splits": [
+                    {
+                        "start_time": "13:32",
+                        "end_time": "13:32"
+                    }
+                ],
+                "hours": 0.0008333333333333334
+            },
+            {
+                "description": "asdfasdf",
+                "splits": [
+                    {
+                        "start_time": "13:48",
+                        "end_time": "13:48"
+                    },
+                    {
+                        "start_time": "13:48",
+                        "end_time": "13:49"
+                    }
+                ],
+                "hours": 0.013333333333333332
+            },
+            {
+                "description": "asdf",
+                "splits": [
+                    {
+                        "start_time": "17:40",
+                        "end_time": "17:40"
+                    }
+                ],
+                "hours": 0.006666666666666667
+            },
+            {
+                "description": "asdffdsa",
+                "splits": [
+                    {
+                        "start_time": "17:44",
+                        "end_time": "17:44"
+                    }
+                ],
+                "hours": 0.0022222222222222222
+            }
+        ]
+    }
+}

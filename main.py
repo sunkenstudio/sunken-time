@@ -12,6 +12,8 @@ from PyQt6.QtGui import QIcon
 from PyQt6.QtCore import QSize
 from models.Split import Split
 from models.Task import Task
+from helpers import read_json, write_json
+from typing import List
 
 # 1 - isRecording -> Pause, Complete : Start Recording
 # 2 - onStartRecording -> new Split, set start time (ISO)
@@ -56,7 +58,7 @@ class MyApp(QWidget):
             b.setFixedSize(100, 60)
             b.setIconSize(QSize(40, 40))
             
-        self.complete_button = QPushButton("&Finish Task", clicked=self.start_recording)
+        self.complete_button = QPushButton("&Finish Task", clicked=self.complete_task)
         description_input_label = QLabel("What I Did")
         self.description_input = QTextEdit()
 
@@ -75,13 +77,47 @@ class MyApp(QWidget):
     def start_recording(self):
         self.current_split = Split()
         self.toggle_buttons(True)
-        print(self.current_split.start_time)
         
     def stop_recording(self):
         self.current_split.complete()
         self.task.add_split(self.current_split)
         self.toggle_buttons(False)
-        print(self.current_split.end_time)
+    
+    def complete_task(self):
+        self.record_button.setEnabled(True)
+        self.pause_button.setEnabled(False)
+        self.complete_button.setEnabled(False)
+        values = {}
+        backup_file_path = f"./data/backups/{self.task.date}.json"
+        try:
+            values = read_json(backup_file_path)
+        except FileNotFoundError:
+            values = {}
+            values[self.task.date] = {
+                "total_hours":0.0,
+                "tasks":[]
+            }
+        hours = self.get_hours_from_splits()
+        formatted_splits = []
+        for s in self.task.splits:
+            formatted_splits.append({"start_time": s.start_time.strftime("%H:%M"), "end_time":s.end_time.strftime("%H:%M")})
+
+        values[self.task.date]["tasks"].append({
+            "description":self.description_input.toPlainText(),
+            "splits": formatted_splits,
+            "hours": hours,
+        })
+        values[self.task.date]["total_hours"] = 0.0
+        for t in values[self.task.date]["tasks"]:
+            values[self.task.date]["total_hours"] += t["hours"]
+        write_json(backup_file_path, values)
+        
+    def get_hours_from_splits(self):
+        total = 0.0
+        for i in self.task.splits:
+            dif = (i.end_time - i.start_time).seconds / 60 / 60
+            total += dif
+        return float(total)
     
     def toggle_buttons(self, is_recording):
         if is_recording:
